@@ -131,31 +131,21 @@ def load_model():
     with open("tfidf_vectorizer.pkl", "rb") as f:
         tfidf = pickle.load(f)
     return model, tfidf
-
-
+    
 # ─────────────────────────────────────────────────────────────
 # PREDICTION HELPER
 # ─────────────────────────────────────────────────────────────
-from sklearn.calibration import CalibratedClassifierCV
-from sklearn.svm import LinearSVC
-
-svm = LinearSVC()
-model = CalibratedClassifierCV(svm)
 
 def predict(text: str, model, tfidf):
     clean = preprocess(text)
     vec = tfidf.transform([clean])
 
-    # Get prediction
+    # prediction
     label = model.predict(vec)[0]
-
-    # Force label into proper string format
     label = str(label).strip().capitalize()
 
-    # Get probabilities
+    # probabilities
     probas = model.predict_proba(vec)[0]
-
-    # Make class names match dictionary keys
     classes = [str(c).strip().capitalize() for c in model.classes_]
 
     conf_dict = {c: p for c, p in zip(classes, probas)}
@@ -163,12 +153,15 @@ def predict(text: str, model, tfidf):
 
     return label, top_conf, conf_dict
 
-  EMOJI_MAP = {
+
+# Emoji mapping
+EMOJI_MAP = {
     "Positive": "😊",
     "Neutral": "😐",
     "Negative": "😞"
 }
 
+# Color mapping
 COLOR_MAP = {
     "Positive": "#4CAF50",
     "Neutral": "#FF9800",
