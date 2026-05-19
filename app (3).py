@@ -141,7 +141,6 @@ from sklearn.svm import LinearSVC
 
 svm = LinearSVC()
 model = CalibratedClassifierCV(svm)
-model.fit(x_train,y_train)
 
 def predict(text: str, model, tfidf):
     clean   = preprocess(text)
