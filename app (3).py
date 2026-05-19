@@ -163,6 +163,19 @@ def predict(text: str, model, tfidf):
 
     return label, top_conf, conf_dict
 
+  EMOJI_MAP = {
+    "Positive": "😊",
+    "Neutral": "😐",
+    "Negative": "😞"
+}
+
+COLOR_MAP = {
+    "Positive": "#4CAF50",
+    "Neutral": "#FF9800",
+    "Negative": "#F44336"
+}
+
+CLASS_ORDER = ["Negative", "Neutral", "Positive"]
 # ─────────────────────────────────────────────────────────────
 # UI
 # ─────────────────────────────────────────────────────────────
@@ -237,7 +250,7 @@ if predict_btn:
             label, confidence, conf_dict = predict(review_text, model, tfidf)
 
         css_class = f"result-{label.lower()}"
-        emoji = EMOJI_MAP[label]
+        emoji = EMOJI_MAP.get(label, "🤖")
         
         # Result card
         conf_pct = confidence * 100
