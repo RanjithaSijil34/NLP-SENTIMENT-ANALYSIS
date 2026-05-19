@@ -7,6 +7,7 @@ import re
 import pickle
 import numpy as np
 import streamlit as st
+import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
@@ -104,7 +105,7 @@ st.markdown("""
 # ─────────────────────────────────────────────────────────────
 # PREPROCESSING (must match training)
 # ─────────────────────────────────────────────────────────────
-STOP_WORDS = set(stopwords.words("english"))
+nltk.download('stopwords')
 STEMMER    = PorterStemmer()
 
 def preprocess(text: str) -> str:
@@ -124,9 +125,9 @@ def preprocess(text: str) -> str:
 # ─────────────────────────────────────────────────────────────
 @st.cache_resource(show_spinner=False)
 def load_model():
-    with open("outputs/svm_model.pkl", "rb") as f:
+    with open("svm_model.pkl", "rb") as f:
         model = pickle.load(f)
-    with open("outputs/tfidf_vectorizer.pkl", "rb") as f:
+    with open("tfidf_vectorizer.pkl", "rb") as f:
         tfidf = pickle.load(f)
     return model, tfidf
 
@@ -134,6 +135,13 @@ def load_model():
 # ─────────────────────────────────────────────────────────────
 # PREDICTION HELPER
 # ─────────────────────────────────────────────────────────────
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.svm import LinearSVC
+
+svm = LinearSVC()
+model = CalibratedClassifierCV(svm)
+model.fit(X_train,y_train)
+
 EMOJI_MAP  = {"Positive": "😊", "Neutral": "😐", "Negative": "😞"}
 COLOR_MAP  = {"Positive": "#4CAF50", "Neutral": "#FF9800", "Negative": "#F44336"}
 CLASS_ORDER = ["Negative", "Neutral", "Positive"]
