@@ -143,17 +143,25 @@ svm = LinearSVC()
 model = CalibratedClassifierCV(svm)
 
 def predict(text: str, model, tfidf):
-    clean   = preprocess(text)
-    vec     = tfidf.transform([clean])
-    label   = model.predict(vec)[0]
-    probas  = model.predict_proba(vec)[0]
-    classes = model.classes_
+    clean = preprocess(text)
+    vec = tfidf.transform([clean])
+
+    # Get prediction
+    label = model.predict(vec)[0]
+
+    # Force label into proper string format
+    label = str(label).strip().capitalize()
+
+    # Get probabilities
+    probas = model.predict_proba(vec)[0]
+
+    # Make class names match dictionary keys
+    classes = [str(c).strip().capitalize() for c in model.classes_]
 
     conf_dict = {c: p for c, p in zip(classes, probas)}
-    top_conf  = conf_dict[label]
+    top_conf = conf_dict.get(label, 0)
 
     return label, top_conf, conf_dict
-
 
 # ─────────────────────────────────────────────────────────────
 # UI
@@ -229,7 +237,7 @@ if predict_btn:
             label, confidence, conf_dict = predict(review_text, model, tfidf)
 
         css_class = f"result-{label.lower()}"
-        emoji = EMOJI_MAP.get(label, "🤖")
+        emoji = EMOJI_MAP[label]
         
         # Result card
         conf_pct = confidence * 100
