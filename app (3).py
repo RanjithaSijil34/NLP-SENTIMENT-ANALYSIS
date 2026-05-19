@@ -163,15 +163,13 @@ def predict(text: str, model, tfidf):
 
     return label, top_conf, conf_dict
 
-  EMOJI_MAP = 
-{
+  EMOJI_MAP = {
     "Positive": "😊",
     "Neutral": "😐",
     "Negative": "😞"
 }
 
-COLOR_MAP = 
-{
+COLOR_MAP = {
     "Positive": "#4CAF50",
     "Neutral": "#FF9800",
     "Negative": "#F44336"
