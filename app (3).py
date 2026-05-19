@@ -106,6 +106,7 @@ st.markdown("""
 # PREPROCESSING (must match training)
 # ─────────────────────────────────────────────────────────────
 nltk.download('stopwords')
+STOP_WORDS = set(stopwords.words("english"))
 STEMMER    = PorterStemmer()
 
 def preprocess(text: str) -> str:
@@ -141,10 +142,6 @@ from sklearn.svm import LinearSVC
 svm = LinearSVC()
 model = CalibratedClassifierCV(svm)
 model.fit(x_train,y_train)
-
-EMOJI_MAP  = {"Positive": "😊", "Neutral": "😐", "Negative": "😞"}
-COLOR_MAP  = {"Positive": "#4CAF50", "Neutral": "#FF9800", "Negative": "#F44336"}
-CLASS_ORDER = ["Negative", "Neutral", "Positive"]
 
 def predict(text: str, model, tfidf):
     clean   = preprocess(text)
