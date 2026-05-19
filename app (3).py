@@ -229,8 +229,7 @@ if predict_btn:
             label, confidence, conf_dict = predict(review_text, model, tfidf)
 
         css_class = f"result-{label.lower()}"
-        emoji     = EMOJI_MAP[label]
-
+        emoji = EMOJI_MAP.get(label, "🤖")
         # Result card
         conf_pct = confidence * 100
         conf_text = (
